@@ -5,7 +5,7 @@ namespace Orangehill\Iseed;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Str;
+use Illuminate\Support\Str;
 
 class Iseed
 {
