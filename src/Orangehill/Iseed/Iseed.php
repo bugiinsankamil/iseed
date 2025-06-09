@@ -5,6 +5,8 @@ namespace Orangehill\Iseed;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class Iseed
@@ -133,10 +135,10 @@ class Iseed
      */
     public function getData($table, $max, $exclude = null, $orderBy = null, $direction = 'ASC', $whereClause = null)
     {
-        $result = \DB::connection($this->databaseName)->table($table);
+        $result = DB::connection($this->databaseName)->table($table);
 
         if (!empty($exclude)) {
-            $allColumns = \DB::connection($this->databaseName)->getSchemaBuilder()->getColumnListing($table);
+            $allColumns = DB::connection($this->databaseName)->getSchemaBuilder()->getColumnListing($table);
             $result = $result->select(array_diff($allColumns, $exclude));
         }
 
@@ -185,7 +187,7 @@ class Iseed
      */
     public function hasTable($table)
     {
-        return \Schema::connection($this->databaseName)->hasTable($table);
+        return Schema::connection($this->databaseName)->hasTable($table);
     }
 
     /**
@@ -235,7 +237,7 @@ class Iseed
             $this->addNewLines($inserts);
             $this->addIndent($inserts, 2);
             $inserts .= sprintf(
-                "\DB::table('%s')->insert(%s);",
+                "DB::table('%s')->insert(%s);",
                 $table,
                 $this->prettifyArray($chunk, $indexed)
             );
@@ -427,7 +429,7 @@ class Iseed
     public function getAllTableNames()
     {
         // Depending on your Laravel version, you may use the Doctrine schema manager:
-        $schema = \DB::connection($this->databaseName)->getDoctrineSchemaManager();
+        $schema = DB::connection($this->databaseName)->getDoctrineSchemaManager();
         return $schema->listTableNames();
     }
 }
