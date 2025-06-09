@@ -197,7 +197,7 @@ class Iseed
     public function generateClassName($table, $prefix = null, $suffix = null)
     {
         $tableString = '';
-        $tableName = explode('_', $table);
+        $tableName = explode('_', Str::singular($table));
         foreach ($tableName as $tableNameExploded) {
             $tableString .= ucfirst($tableNameExploded);
         }
