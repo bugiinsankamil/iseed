@@ -3,6 +3,9 @@
 namespace Orangehill\Iseed;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -94,7 +97,7 @@ class IseedCommand extends Command
              list($fileName, $className) = $this->generateFileName($table, $prefix, $suffix);
      
              // if file does not exist or force option is turned on, generate seeder
-             if (!\File::exists($fileName) || $this->option('force')) {
+             if (!File::exists($fileName) || $this->option('force')) {
                  $this->printResult(
                      app('iseed')->generateSeed(
                          $table,
@@ -165,7 +168,7 @@ class IseedCommand extends Command
         return array(
             array('clean', null, InputOption::VALUE_NONE, 'clean iseed section', null),
             array('force', null, InputOption::VALUE_NONE, 'force overwrite of all existing seed classes', null),
-            array('database', null, InputOption::VALUE_OPTIONAL, 'database connection', \Config::get('database.default')),
+            array('database', null, InputOption::VALUE_OPTIONAL, 'database connection', Config::get('database.default')),
             array('max', null, InputOption::VALUE_OPTIONAL, 'max number of rows', null),
             array('chunksize', null, InputOption::VALUE_OPTIONAL, 'size of data chunks for each insert query', null),
             array('exclude', null, InputOption::VALUE_OPTIONAL, 'exclude columns', null),
@@ -206,7 +209,7 @@ class IseedCommand extends Command
      */
     protected function generateFileName($table, $prefix=null, $suffix=null)
     {
-        if (!\Schema::connection($this->option('database') ? $this->option('database') : config('database.default'))->hasTable($table)) {
+        if (!Schema::connection($this->option('database') ? $this->option('database') : config('database.default'))->hasTable($table)) {
             throw new TableNotFoundException("Table $table was not found.");
         }
 
